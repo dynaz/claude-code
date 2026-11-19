@@ -1,0 +1,39 @@
+name: Synology Claude Code Docker build
+
+on:
+  push:
+    branches:
+      - feature/synology-dsm-docker
+    paths:
+      - 'docker/synology/**'
+      - 'scripts/*synology.sh'
+      - '.github/workflows/synology-docker.yml'
+  pull_request:
+    paths:
+      - 'docker/synology/**'
+      - 'scripts/*synology.sh'
+      - '.github/workflows/synology-docker.yml'
+  workflow_dispatch:
+
+jobs:
+  linux-amd64-build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate installer syntax
+        run: |
+          sh -n scripts/install-synology.sh
+          sh -n scripts/test-synology.sh
+      - name: Build Synology image
+        run: docker compose -f docker/synology/compose.yaml build
+      - name: Start and validate
+        run: |
+          docker compose -f docker/synology/compose.yaml up -d
+          sh scripts/test-synology.sh
+      - name: Inspect failures
+        if: failure()
+        run: docker compose -f docker/synology/compose.yaml logs --no-color || true
+      - name: Tear down
+        if: always()
+        run: docker compose -f docker/synology/compose.yaml down

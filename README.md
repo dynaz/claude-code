@@ -70,3 +70,7 @@ See our [data usage policies](https://code.claude.com/docs/en/data-usage).
 We have implemented several safeguards to protect your data, including limited retention periods for sensitive information, restricted access to user session data, and clear policies against using feedback for model training.
 
 For full details, please review our [Commercial Terms of Service](https://www.anthropic.com/legal/commercial-terms) and [Privacy Policy](https://www.anthropic.com/legal/privacy).
+
+## Synology NAS / TermiNow SSH
+
+Run the official Claude Code CLI in an isolated x86_64 Synology Docker container with persistent workspace and login state. See [Synology Docker installation guide](docs/synology.md). The installer and Compose files are on the `feature/synology-dsm-docker` branch while under review.
