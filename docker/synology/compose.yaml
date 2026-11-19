@@ -1,0 +1,31 @@
+# NAS x86_64 profile. No host network ports, privileged mode or NAS shares.
+services:
+  claude:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: terminow-claude-code:synology
+    container_name: terminow-claude-code
+    platform: linux/amd64
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    working_dir: /workspace
+    environment:
+      HOME: /home/claude
+      TERM: xterm-256color
+      DISABLE_AUTOUPDATER: "1"
+    volumes:
+      - claude_home:/home/claude
+      - claude_workspace:/workspace
+    mem_limit: 1536m
+    pids_limit: 256
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    # Intentionally no published ports. Use docker exec through TermiNow SSH.
+
+volumes:
+  claude_home:
+  claude_workspace:
